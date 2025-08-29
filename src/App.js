@@ -1,28 +1,28 @@
 import './App.css';
 
-function Square(){
+function Square({valor}){
   return(
-    <button className='square'>1</button>
+    <button classname="square">{valor}</button>
   );
 }
 
-export default function Square(){
+export default function Tabuleiro(){
   return(
     <div>
       <div>
-        <button className='square'>X</button>
-        <button className='square'>X</button>
-        <button className='square'>X</button>
+        <Square valor="1"/>
+        <Square valor="2"/>
+        <Square valor="3"/>
       </div>
       <div>
-        <button className='square'>X</button>
-        <button className='square'>X</button>
-        <button className='square'>X</button>
+        <Square valor="4"/>
+        <Square valor="5"/>
+        <Square valor="6"/>
       </div>
       <div>
-        <button className='square'>X</button>
-        <button className='square'>X</button>
-        <button className='square'>X</button>
+        <Square valor="7"/>
+        <Square valor="8"/>
+        <Square valor="9"/>
       </div>
     </div>
   );
