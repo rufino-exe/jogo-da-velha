@@ -9,29 +9,32 @@ function Square({valor, onSquareClick}){
   );
 }
 
-export default function Tabuleiro(){
-  const [xIsNext, setXIsNext] = useState(true)
-  const [squares, setSquares] = useState(Array(9).fill(null))
+function Tabuleiro({xIsNext, squares , onPlay}){
 
   function handleClick(i){
     const nextSquares = squares.slice()
-
     if(nextSquares[i] || calculaVencedor(squares)){
       return
     }
     if(xIsNext){
       nextSquares[i] = 'X'
-      setXIsNext(false)
     }
     else{
       nextSquares[i] = 'O'
-      setXIsNext(true)
+     onPlay(nextSquares)
     }
-      setSquares(nextSquares)
+  }
+  const vencedor = calculaVencedor(squares)
+  let status
+  if(vencedor){
+    status = "Vencedor: "+status
+  }else{
+    status = "Próximo jogador: "+(xIsNext ? "X" : "O")
   }
 
   return(
     <div>
+      <div classname = 'status'>{status}</div>
       <div>
         <Square valor={squares[0]} onSquareClick={()=>handleClick(0)}/>
         <Square valor={squares[1]} onSquareClick={()=>handleClick(1)}/>
@@ -49,6 +52,46 @@ export default function Tabuleiro(){
       </div>
     </div>
   );
+}
+export default function Game(){
+ const [history, setHistory] = useState(Array(9).fill(null))
+ const [currentMove, setCurrentMove]= useState (0)
+ const xIsNext = currentMove % 2 === 0
+ const currentSquares = history[currentMove]
+
+ function handlePlay(nextSquares){
+  const nextHistory = [...history.slice(0,currentMove+1), nextSquares]
+  setHistory(nextHistory)
+  setCurrentMove(nextHistory.length-1)
+
+ }
+ function jumpTo(nextMove){
+  setCurrentMove(nextMove)
+ } 
+
+ const moves = history.map((squares,move) =>{
+  let description
+  if(move>0){
+    description = 'Vai para o movimento #'+move
+  }else{
+    description = 'Vai iniciar o jogo'
+  }
+  return(
+    <li key = {move}>
+      <button onClick={()=> jumpTo(move)}>{description}</button>
+    </li>
+  )
+ })
+ return(
+  <div className = "game">
+    <div className="game_bord">
+      <Tabuleiro xIsNext={xIsNext}squares={currentSquares} onPlay={handlePlay}></Tabuleiro>
+    </div>
+    <div className='game-info'>
+      <ol>{moves}</ol>
+    </div>
+  </div>
+ )
 }
 function calculaVencedor(squares){
   const lines = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
